@@ -56,7 +56,6 @@ exports.updateQuote = (req, res, next) => {
         if (index === -1) {
             return res.status(404).json({ message: 'Quote not found' });
         }
-
         quotes[index] = {
             ...quotes[index],
             author: req.body.author || quotes[index].author,

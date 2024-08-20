@@ -135,3 +135,7 @@
 ::1 - - [09/Aug/2024:19:14:27 +0000] "GET /public/documentation.html HTTP/1.1" 404 164 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36"
 ::1 - - [09/Aug/2024:19:14:55 +0000] "GET /quotes HTTP/1.1" 304 - "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36"
 ::1 - - [09/Aug/2024:19:14:55 +0000] "GET /quotes HTTP/1.1" 304 - "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36"
+::1 - - [10/Aug/2024:10:21:47 +0000] "PUT /quotes/p6o5n4m3l2k1-j0i9h8g7f6e-5d4c3b2a1z HTTP/1.1" 200 147 "-" "PostmanRuntime/7.40.0"
+::1 - - [19/Aug/2024:03:11:00 +0000] "GET /favicon.ico HTTP/1.1" 404 150 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36"
+::1 - - [19/Aug/2024:03:11:21 +0000] "GET /quotes HTTP/1.1" 200 815 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36"
+::1 - - [19/Aug/2024:03:11:21 +0000] "GET /quotes HTTP/1.1" 200 815 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36"

@@ -14,7 +14,7 @@ function getQuotes() {
             return [];
         }
     } else {
-        return [];
+        return "The file doesn't exist.";
     }
 }
 
