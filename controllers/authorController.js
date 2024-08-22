@@ -1,109 +1,113 @@
-const Author = require('../models/authorModel');
-const { v4: uuidv4 } = require('uuid');
+const { PrismaClient } = require("@prisma/client");
+const { StatusCodes } = require("http-status-codes"); // Ensure you have this import
+
+
+const prisma = new PrismaClient();
 
 // GET all authors
-exports.getAllAuthors = (req, res) => {
-    const authors = Author.getAuthors();
+exports.getAllAuthors = async (req, res) => {
+  try {
+    const authors = await prisma.author.findMany();
 
-    if (!authors) {
-        return res.status(500).json({ message: 'Failed to retrieve authors' });
+    if (authors.length === 0) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: "No authors found" });
     }
 
-    res.status(200).json(authors);
+    res.status(StatusCodes.OK).json(authors);
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error.message);
+  }
 };
 
 // GET a single author by ID
-exports.getAuthorById = (req, res) => {
-    const authors = Author.getAuthors();
-
-    if (!authors) {
-        return res.status(500).json({ message: 'Failed to retrieve authors' });
-    }
-
-    const author = authors.find(a => a.id === req.params.id);
+exports.getAuthorById = async (req, res) => {
+  try {
+    const author = await prisma.author.findUnique({
+      where: { id: parseInt(req.params.id) },
+    });
 
     if (!author) {
-        return res.status(404).json({ message: 'Author not found' });
+      return res.status(404).json({ message: "Author not found" });
     }
 
     res.status(200).json(author);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Failed to retrieve author", error: error.message });
+  }
 };
 
 // POST a new author
-exports.createAuthor = (req, res) => {
-    const authors = Author.getAuthors();
-
-    if (!authors) {
-        return res.status(500).json({ message: 'Failed to retrieve authors' });
-    }
-
-    const newAuthor = {
-        id: uuidv4(),
+exports.createAuthor = async (req, res) => {
+  try {
+    // Create a new author in the database using Prisma
+    const newAuthor = await prisma.author.create({
+      data: {
         name: req.body.name,
-        bio: req.body.bio,
-    };
+        picture: req.body.picture,
+      },
+    });
 
-    authors.push(newAuthor);
-
-    const success = Author.saveAuthors(authors);
-
-    if (!success) {
-        return res.status(500).json({ message: 'Failed to save the new author' });
-    }
-
+    // Return the newly created author with a 201 status
     res.status(201).json(newAuthor);
+  } catch (error) {
+    // Handle any errors during the creation process
+    res
+      .status(500)
+      .json({
+        message: "Failed to create the new author",
+        error: error.message,
+      });
+  }
 };
 
 // PUT (update) an existing author by ID
-exports.updateAuthor = (req, res) => {
-    const authors = Author.getAuthors();
-
-    if (!authors) {
-        return res.status(500).json({ message: 'Failed to retrieve authors' });
+exports.updateAuthor = async (req, res) => {
+    try {
+      const { id } = req.params;
+  
+      // Update the author in the database using Prisma
+      const updatedAuthor = await prisma.author.update({
+        where: { id: parseInt(id) },  // Ensure the ID is parsed as an integer
+        data: {
+          name: req.body.name,
+          picture: req.body.picture,
+        },
+      });
+  
+      // Return the updated author with a 200 status
+      res.status(200).json(updatedAuthor);
+    } catch (error) {
+      if (error.code === 'P2025') { // Prisma error code for "Record to update not found"
+        return res.status(404).json({ message: "Author not found" });
+      }
+      // Handle any other errors during the update process
+      res.status(500).json({ message: "Failed to update the author", error: error.message });
     }
-
-    const index = authors.findIndex(a => a.id === req.params.id);
-
-    if (index === -1) {
-        return res.status(404).json({ message: 'Author not found' });
-    }
-
-    authors[index] = {
-        ...authors[index],
-        name: req.body.name || authors[index].name,
-        bio: req.body.bio || authors[index].bio,
-    };
-
-    const success = Author.saveAuthors(authors);
-
-    if (!success) {
-        return res.status(500).json({ message: 'Failed to update the author' });
-    }
-
-    res.status(200).json(authors[index]);
-};
+  };
+  
 
 // DELETE an author by ID
-exports.deleteAuthor = (req, res) => {
-    const authors = Author.getAuthors();
-
-    if (!authors) {
-        return res.status(500).json({ message: 'Failed to retrieve authors' });
+exports.deleteAuthor = async (req, res) => {
+    try {
+      const { id } = req.params;
+  
+      // Attempt to delete the author from the database using Prisma
+      await prisma.author.delete({
+        where: { id: parseInt(id) }, // Ensure the ID is parsed as an integer
+      });
+  
+      // If the deletion is successful, return a 204 No Content status
+      res.status(204).send(); // 204 indicates the request was successful, but there's no content to send back
+    } catch (error) {
+      if (error.code === 'P2025') { // Prisma error code for "Record to delete not found"
+        return res.status(404).json({ message: "Author not found" });
+      }
+      // Handle any other errors that occur during the deletion process
+      res.status(500).json({ message: "Failed to delete the author", error: error.message });
     }
-
-    const index = authors.findIndex(a => a.id === req.params.id);
-
-    if (index === -1) {
-        return res.status(404).json({ message: 'Author not found' });
-    }
-
-    authors.splice(index, 1);
-
-    const success = Author.saveAuthors(authors);
-
-    if (!success) {
-        return res.status(500).json({ message: 'Failed to delete the author' });
-    }
-
-    res.status(204).send();
-};
+  };
+  

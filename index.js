@@ -7,7 +7,7 @@ const quoteRoutes = require("./routes/quoteRoutes");
 const { getQuotes } = require('./models/quoteModel');
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4500;
 
 // // Set the view engine to EJS
 // app.set('view engine', 'ejs');

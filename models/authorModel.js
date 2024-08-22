@@ -6,16 +6,16 @@ const filePath = path.join(__dirname, '../models/authors.json');
 
 // Function to read and parse the authors from the JSON file
 function getAuthors() {
-    if (fs.existsSync(filePath)) {
-        const data = fs.readFileSync(filePath, 'utf8');
-        if (data) {
-            return JSON.parse(data);
-        } else {
-            return [];
-        }
-    } else {
-        return [];
-    }
+    // if (fs.existsSync(filePath)) {
+    //     const data = fs.readFileSync(filePath, 'utf8');
+    //     if (data) {
+    //         return JSON.parse(data);
+    //     } else {
+    //         return [];
+    //     }
+    // } else {
+    //     return [];
+    // }
 }
 
 // Function to save authors to the JSON file
