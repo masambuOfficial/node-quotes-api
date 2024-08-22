@@ -4,41 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quotes API Documentation</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            background: #333;
-            color: #fff;
-            padding: 1rem 0;
-            text-align: center;
-        }
-        main {
-            padding: 2rem;
-        }
-        h1, h2, h3 {
-            border-bottom: 2px solid #333;
-            padding-bottom: 0.5rem;
-        }
-        code {
-            background: #f4f4f4;
-            padding: 0.2rem 0.4rem;
-            border-radius: 4px;
-        }
-        pre {
-            background: #f4f4f4;
-            padding: 1rem;
-            border-radius: 4px;
-            overflow-x: auto;
-        }
-        .endpoint {
-            margin-bottom: 1.5rem;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
@@ -52,7 +18,7 @@
 
         <section>
             <h2>Base URL</h2>
-            <pre><code>http://localhost:3000</code></pre>
+            <pre><code>http://localhost:4500</code></pre>
         </section>
 
         <section>
@@ -63,31 +29,59 @@
                 <li><strong>POST /quotes</strong>: Create a new quote.</li>
                 <li><strong>PUT /quotes/:id</strong>: Update an existing quote by its ID.</li>
                 <li><strong>DELETE /quotes/:id</strong>: Delete a quote by its ID.</li>
+                <li><strong>GET /authors</strong>: Retrieve all authors.</li>
+                <li><strong>GET /authors/:id</strong>: Retrieve a single author by their ID.</li>
+                <li><strong>POST /authors</strong>: Create a new author.</li>
+                <li><strong>PUT /authors/:id</strong>: Update an existing author by their ID.</li>
+                <li><strong>DELETE /authors/:id</strong>: Delete an author by their ID.</li>
             </ul>
         </section>
 
         <section>
             <h2>Data Format</h2>
-            <p>Quotes are stored as JSON objects in the following format:</p>
+            <p>Quotes and authors are stored as JSON objects in the following format:</p>
+            <pre><code>[
+    [
+        {
+            "id": 2,
+            "text": "\"Success is not final, failure is not fatal: It is the courage to continue that counts.\"",
+            "year": 1942,
+            "category": "Motivational",
+            "authorId": 3
+        },
+        {
+            "id": 8,
+            "text": "\"Be the change you wish to see in the world.\"",
+            "year": 1913,
+            "category": "Motivation",
+            "authorId": 11
+        },
+    ]
+]</code></pre>
+            <ul>
+                <li><strong>`id`</strong>: A auto-incremented ID is generated as data is being saved in the DB.</li>
+                <li><strong>`text`</strong>: The text of the quote.</li>
+                <li><strong>`year`</strong> (optional): The year the quote was said or published.</li>
+                <li><strong>`category`</strong>: The category of the quote. e.g motivation, love e.t.c</li>
+                <li><strong>`authorID`</strong>: This a Foreign Key (FK) creating a relationship between quotes and authors</li>
+            </ul>
+            <p>Authors are stored as JSON objects in the following format:</p>
             <pre><code>[
     {
-        "id": "1a2b3c4d-5e6f-7g8h-9i0j-k1l2m3n4o5p6",
-        "quote": "The only limit to our realization of tomorrow is our doubts of today.",
-        "author": "Franklin D. Roosevelt",
-        "year": 1945
+        "id": "1",
+        "name": "Franklin D. Roosevelt",
+        "picture": "http://example.com/image.jpg"
     },
     {
-        "id": "7p8q9r0s-t1u2v3w4-x5y6z7a8b9c0",
-        "quote": "In the middle of every difficulty lies opportunity.",
-        "author": "Albert Einstein",
-        "year": 1946
+        "id": "2",
+        "name": "Albert Einstein",
+        "picture": "http://example.com/image2.jpg"
     }
 ]</code></pre>
             <ul>
-                <li><strong>`id`</strong>: A unique serialized ID generated using UUID format (e.g., <code>1a2b3c4d-5e6f-7g8h-9i0j-k1l2m3n4o5p6</code>).</li>
-                <li><strong>`quote`</strong>: The text of the quote.</li>
-                <li><strong>`author`</strong>: The name of the person who said the quote.</li>
-                <li><strong>`year`</strong> (optional): The year the quote was said or published.</li>
+                <li><strong>`id`</strong>: A auto-incremented ID is generated as data is being saved in the DB.</li>
+                <li><strong>`name`</strong>: The name of the author.</li>
+                <li><strong>`picture`</strong> (optional): The URL to the author's picture.</li>
             </ul>
         </section>
 
@@ -104,21 +98,23 @@
                     <li><strong>Body</strong>: An array of quote objects.</li>
                 </ul>
                 <p><strong>Example Request</strong>:</p>
-                <pre><code>GET http://localhost:3000/quotes</code></pre>
+                <pre><code>GET http://localhost:4500/quotes</code></pre>
                 <p><strong>Example Response</strong>:</p>
                 <pre><code>[
-    {
-        "id": "1a2b3c4d-5e6f-7g8h-9i0j-k1l2m3n4o5p6",
-        "quote": "The only limit to our realization of tomorrow is our doubts of today.",
-        "author": "Franklin D. Roosevelt",
-        "year": 1945
-    },
-    {
-        "id": "7p8q9r0s-t1u2v3w4-x5y6z7a8b9c0",
-        "quote": "In the middle of every difficulty lies opportunity.",
-        "author": "Albert Einstein",
-        "year": 1946
-    }
+                    {
+                        "id": 2,
+                        "text": "\"Success is not final, failure is not fatal: It is the courage to continue that counts.\"",
+                        "year": 1942,
+                        "category": "Motivational",
+                        "authorId": 3
+                    },
+                    {
+                        "id": 8,
+                        "text": "\"Be the change you wish to see in the world.\"",
+                        "year": 1913,
+                        "category": "Motivation",
+                        "authorId": 11
+                    },
 ]</code></pre>
             </div>
 
@@ -126,18 +122,90 @@
                 <h3>2. Retrieve a Single Quote by ID</h3>
                 <p><strong>Endpoint</strong>: <code>GET /quotes/:id</code></p>
                 <p><strong>Description</strong>: Retrieves a specific quote by its unique serialized ID.</p>
-                <p><strong>Parameters</strong>:</p>
-                <ul>
-                    <li><strong>`id`</strong>: The serialized ID of the quote (UUID format).</li>
-                </ul>
                 <p><strong>Response</strong>:</p>
                 <ul>
-                    <li><strong>Status</strong>: <code>200 OK</code> if the quote is found.</li>
-                    <li><strong>Body</strong>: The quote object.</li>
-                    <li><strong>Status</strong>: <code>404 Not Found</code> if the quote does not exist.</li>
+                    <li><strong>Status</strong>: <code>200 OK</code></li>
+                    <li><strong>Body</strong>: A quote object.</li>
                 </ul>
                 <p><strong>Example Request</strong>:</p>
-                <pre><code>GET http://localhost:3000/quotes/1a2b3c4d-5e6f-7g8h-9i0j-k1l2m3n4o5p6</code></pre>
+                <pre><code>GET http://localhost:4500/quotes/1</code></pre>
+                <p><strong>Example Response</strong>:</p>
+                <pre><code>{
+                    "id": 2,
+                    "text": "\"Success is not final, failure is not fatal: It is the courage to continue that counts.\"",
+                    "year": 1942,
+                    "category": "Motivational",
+                    "authorId": 3
+}</code></pre>
+            </div>
+
+            <div class="endpoint">
+                <h3>3. Create a New Quote</h3>
+                <p><strong>Endpoint</strong>: <code>POST /quotes</code></p>
+                <p><strong>Description</strong>: Creates a new quote entry.</p>
+                <p><strong>Request Body</strong>:</p>
+                <pre><code>{
+                    "text": "Because I could not stop for Death, he kindly stopped for me; the carriage held but just ourselves and Immortality." ,
+                    "year": 1890,
+                    "category": "Motivation",
+                    "name": "Emily Dickinson",
+                    "picture": "https://rb.gy/pzo6fd"
+}</code></pre>
+                <p><strong>Response</strong>:</p>
+                <ul>
+                    <li><strong>Status</strong>: <code>201 Created</code></li>
+                    <li><strong>Body</strong>: The created quote object, including its generated ID.</li>
+                </ul>
+                <p><strong>Example Request</strong>:</p>
+                <pre><code>POST http://localhost:4500/quotes
+Content-Type: application/json
+
+{
+    "text": "Because I could not stop for Death, he kindly stopped for me; the carriage held but just ourselves and Immortality." ,
+    "year": 1890,
+    "category": "Motivation",
+    "name": "Emily Dickinson",
+    "picture": "https://rb.gy/pzo6fd"
+}</code></pre>
+                <p><strong>Example Response</strong>:</p>
+                <pre><code>{
+                    "id": 7,
+                    "text": "Because I could not stop for Death, he kindly stopped for me; the carriage held but just ourselves and Immortality.",
+                    "year": 1890,
+                    "category": "Motivation",
+                    "authorId": 8,
+                    "Author": {
+                        "id": 8,
+                        "name": "Emily Dickinson",
+                        "picture": "https://rb.gy/pzo6fd"
+                    }
+}</code></pre>
+            </div>
+
+            <div class="endpoint">
+                <h3>4. Update a Quote by ID</h3>
+                <p><strong>Endpoint</strong>: <code>PUT /quotes/:id</code></p>
+                <p><strong>Description</strong>: Updates an existing quote by its unique ID.</p>
+                <p><strong>Request Body</strong>:</p>
+                <pre><code>{
+    "quote": "The only limit to our realization of tomorrow is our doubts of today.",
+    "author": "Franklin D. Roosevelt",
+    "year": 1945
+}</code></pre>
+                <p><strong>Response</strong>:</p>
+                <ul>
+                    <li><strong>Status</strong>: <code>200 OK</code></li>
+                    <li><strong>Body</strong>: The updated quote object.</li>
+                </ul>
+                <p><strong>Example Request</strong>:</p>
+                <pre><code>PUT http://localhost:4500/quotes/1
+Content-Type: application/json
+
+{
+    "quote": "The only limit to our realization of tomorrow is our doubts of today.",
+    "author": "Franklin D. Roosevelt",
+    "year": 1945
+}</code></pre>
                 <p><strong>Example Response</strong>:</p>
                 <pre><code>{
     "id": "1a2b3c4d-5e6f-7g8h-9i0j-k1l2m3n4o5p6",
@@ -148,137 +216,153 @@
             </div>
 
             <div class="endpoint">
-                <h3>3. Create a New Quote</h3>
-                <p><strong>Endpoint</strong>: <code>POST /quotes</code></p>
-                <p><strong>Description</strong>: Creates a new quote and assigns a unique serialized ID to it.</p>
-                <p><strong>Request Body</strong>:</p>
-                <ul>
-                    <li><strong>`quote`</strong>: The text of the quote (required).</li>
-                    <li><strong>`author`</strong>: The name of the person who said the quote (required).</li>
-                    <li><strong>`year`</strong>: The year the quote was said or published (optional).</li>
-                </ul>
-                <p><strong>Response</strong>:</p>
-                <ul>
-                    <li><strong>Status</strong>: <code>201 Created</code></li>
-                    <li><strong>Body</strong>: The newly created quote object, including its ID.</li>
-                </ul>
-                <p><strong>Example Request</strong>:</p>
-                <pre><code>POST http://localhost:3000/quotes</code></pre>
-                <p><strong>Request Body</strong>:</p>
-                <pre><code>{
-    "quote": "Success is not final, failure is not fatal: It is the courage to continue that counts.",
-    "author": "Winston Churchill",
-    "year": 1941
-}</code></pre>
-                <p><strong>Example Response</strong>:</p>
-                <pre><code>{
-    "id": "9f3b2c1d-6e7f-8g9h-0i1j-k2l3m4n5o6p7",
-    "quote": "Success is not final, failure is not fatal: It is the courage to continue that counts.",
-    "author": "Winston Churchill",
-    "year": 1941
-}</code></pre>
-            </div>
-
-            <div class="endpoint">
-                <h3>4. Update an Existing Quote by ID</h3>
-                <p><strong>Endpoint</strong>: <code>PUT /quotes/:id</code></p>
-                <p><strong>Description</strong>: Updates an existing quote identified by its unique serialized ID.</p>
-                <p><strong>Parameters</strong>:</p>
-                <ul>
-                    <li><strong>`id`</strong>: The serialized ID of the quote (UUID format).</li>
-                </ul>
-                <p><strong>Request Body</strong>:</p>
-                <ul>
-                    <li><strong>`quote`</strong>: The updated text of the quote (optional).</li>
-                    <li><strong>`author`</strong>: The updated name of the person who said the quote (optional).</li>
-                    <li><strong>`year`</strong>: The updated year the quote was said or published (optional).</li>
-                </ul>
-                <p><strong>Response</strong>:</p>
-                <ul>
-                    <li><strong>Status</strong>: <code>200 OK</code> if the update was successful.</li>
-                    <li><strong>Body</strong>: The updated quote object.</li>
-                    <li><strong>Status</strong>: <code>404 Not Found</code> if the quote does not exist.</li>
-                </ul>
-                <p><strong>Example Request</strong>:</p>
-                <pre><code>PUT http://localhost:3000/quotes/9f3b2c1d-6e7f-8g9h-0i1j-k2l3m4n5o6p7</code></pre>
-                <p><strong>Request Body</strong>:</p>
-                <pre><code>{
-    "quote": "Success is not final, failure is not fatal: It is the courage to continue that counts.",
-    "author": "Winston S. Churchill",
-    "year": 1942
-}</code></pre>
-                <p><strong>Example Response</strong>:</p>
-                <pre><code>{
-    "id": "9f3b2c1d-6e7f-8g9h-0i1j-k2l3m4n5o6p7",
-    "quote": "Success is not final, failure is not fatal: It is the courage to continue that counts.",
-    "author": "Winston S. Churchill",
-    "year": 1942
-}</code></pre>
-            </div>
-
-            <div class="endpoint">
                 <h3>5. Delete a Quote by ID</h3>
                 <p><strong>Endpoint</strong>: <code>DELETE /quotes/:id</code></p>
                 <p><strong>Description</strong>: Deletes a specific quote by its unique serialized ID.</p>
-                <p><strong>Parameters</strong>:</p>
-                <ul>
-                    <li><strong>`id`</strong>: The serialized ID of the quote (UUID format).</li>
-                </ul>
                 <p><strong>Response</strong>:</p>
                 <ul>
-                    <li><strong>Status</strong>: <code>200 OK</code> if the deletion was successful.</li>
-                    <li><strong>Body</strong>: A message confirming the deletion.</li>
-                    <li><strong>Status</strong>: <code>404 Not Found</code> if the quote does not exist.</li>
+                    <li><strong>Status</strong>: <code>204 No Content</code></li>
                 </ul>
                 <p><strong>Example Request</strong>:</p>
-                <pre><code>DELETE http://localhost:3000/quotes/9f3b2c1d-6e7f-8g9h-0i1j-k2l3m4n5o6p7</code></pre>
+                <pre><code>DELETE http://localhost:4500/quotes/1</code></pre>
+            </div>
+
+            <div class="endpoint">
+                <h3>6. Retrieve All Authors</h3>
+                <p><strong>Endpoint</strong>: <code>GET /authors</code></p>
+                <p><strong>Description</strong>: Retrieves all authors stored in the API.</p>
+                <p><strong>Response</strong>:</p>
+                <ul>
+                    <li><strong>Status</strong>: <code>200 OK</code></li>
+                    <li><strong>Body</strong>: An array of author objects.</li>
+                </ul>
+                <p><strong>Example Request</strong>:</p>
+                <pre><code>GET http://localhost:4500/authors</code></pre>
+                <p><strong>Example Response</strong>:</p>
+                <pre><code>[
+    {
+        "id": "1",
+        "name": "Franklin D. Roosevelt",
+        "picture": "http://example.com/image.jpg"
+    },
+    {
+        "id": "2",
+        "name": "Albert Einstein",
+        "picture": "http://example.com/image2.jpg"
+    }
+]</code></pre>
+            </div>
+
+            <div class="endpoint">
+                <h3>7. Retrieve a Single Author by ID</h3>
+                <p><strong>Endpoint</strong>: <code>GET /authors/:id</code></p>
+                <p><strong>Description</strong>: Retrieves a specific author by their unique serialized ID.</p>
+                <p><strong>Response</strong>:</p>
+                <ul>
+                    <li><strong>Status</strong>: <code>200 OK</code></li>
+                    <li><strong>Body</strong>: An author object.</li>
+                </ul>
+                <p><strong>Example Request</strong>:</p>
+                <pre><code>GET http://localhost:4500/authors/</code></pre>
                 <p><strong>Example Response</strong>:</p>
                 <pre><code>{
-    "message": "Quote deleted successfully"
+    "id": "1",
+    "name": "Franklin D. Roosevelt",
+    "picture": "http://example.com/image.jpg"
 }</code></pre>
+            </div>
+
+            <div class="endpoint">
+                <h3>8. Create a New Author</h3>
+                <p><strong>Endpoint</strong>: <code>POST /authors</code></p>
+                <p><strong>Description</strong>: Creates a new author entry.</p>
+                <p><strong>Request Body</strong>:</p>
+                <pre><code>{
+    "name": "Franklin D. Roosevelt",
+    "picture": "http://example.com/image.jpg"
+}</code></pre>
+                <p><strong>Response</strong>:</p>
+                <ul>
+                    <li><strong>Status</strong>: <code>201 Created</code></li>
+                    <li><strong>Body</strong>: The created author object, including its generated ID.</li>
+                </ul>
+                <p><strong>Example Request</strong>:</p>
+                <pre><code>POST http://localhost:4500/authors
+Content-Type: application/json
+
+{
+    "name": "Franklin D. Roosevelt",
+    "picture": "http://example.com/image.jpg"
+}</code></pre>
+                <p><strong>Example Response</strong>:</p>
+                <pre><code>{
+    "id": "1",
+    "name": "Franklin D. Roosevelt",
+    "picture": "http://example.com/image.jpg"
+}</code></pre>
+            </div>
+
+            <div class="endpoint">
+                <h3>9. Update an Author by ID</h3>
+                <p><strong>Endpoint</strong>: <code>PUT /authors/:id</code></p>
+                <p><strong>Description</strong>: Updates an existing author by their unique auto-increament ID.</p>
+                <p><strong>Request Body</strong>:</p>
+                <pre><code>{
+    "name": "Franklin D. Roosevelt",
+    "picture": "http://example.com/image.jpg"
+}</code></pre>
+                <p><strong>Response</strong>:</p>
+                <ul>
+                    <li><strong>Status</strong>: <code>200 OK</code></li>
+                    <li><strong>Body</strong>: The updated author object.</li>
+                </ul>
+                <p><strong>Example Request</strong>:</p>
+                <pre><code>PUT http://localhost:4500/authors/1
+Content-Type: application/json
+
+{
+    "name": "Franklin D. Roosevelt",
+    "picture": "http://example.com/image.jpg"
+}</code></pre>
+                <p><strong>Example Response</strong>:</p>
+                <pre><code>{
+    "id": "1",
+    "name": "Franklin D. Roosevelt",
+    "picture": "http://example.com/image.jpg"
+}</code></pre>
+            </div>
+
+            <div class="endpoint">
+                <h3>10. Delete an Author by ID</h3>
+                <p><strong>Endpoint</strong>: <code>DELETE /authors/:id</code></p>
+                <p><strong>Description</strong>: Deletes a specific author by their unique serialized ID.</p>
+                <p><strong>Response</strong>:</p>
+                <ul>
+                    <li><strong>Status</strong>: <code>204 No Content</code></li>
+                </ul>
+                <p><strong>Example Request</strong>:</p>
+                <pre><code>DELETE http://localhost:4500/authors/1</code></pre>
             </div>
         </section>
 
         <section>
-            <h2>Error Handling</h2>
-            <p>The API returns appropriate HTTP status codes and error messages in case of failures. Common error responses include:</p>
+            <h2>How to Use</h2>
+            <p>The API uses a PostgreSQL database with Prisma for ORM. Ensure your database is running on port 5432 (or as configured) and your Prisma schema is properly set up.</p>
             <ul>
-                <li><strong>400 Bad Request</strong>: Returned when required fields are missing in the request body.</li>
-                <li><strong>404 Not Found</strong>: Returned when a quote with the specified ID does not exist.</li>
-                <li><strong>500 Internal Server Error</strong>: Returned when there is a server-side error.</li>
+                <li>Make sure to have PostgreSQL and Prisma installed and configured.</li>
+                <li>Run your server on port 4500.</li>
+                <li>Use Postman or a similar tool to test the API endpoints.</li>
             </ul>
         </section>
 
         <section>
-            <h2>Running the API</h2>
-
-            <h3>Prerequisites</h3>
+            <h2>Errors</h2>
+            <p>Common error responses include:</p>
             <ul>
-                <li><strong>Node.js</strong>: Ensure you have Node.js installed on your machine.</li>
-                <li><strong>npm</strong>: The Node package manager is required to install dependencies.</li>
+                <li><strong>400 Bad Request</strong>: Invalid request data.</li>
+                <li><strong>404 Not Found</strong>: The requested resource could not be found.</li>
+                <li><strong>500 Internal Server Error</strong>: An error occurred on the server.</li>
             </ul>
-
-            <h3>Installation</h3>
-            <ol>
-                <li><strong>Clone the Repository</strong>:</li>
-                <pre><code>git clone https://github.com/your-username/quotes-api.git
-cd quotes-api</code></pre>
-
-                <li><strong>Install Dependencies</strong>:</li>
-                <pre><code>npm install</code></pre>
-
-                <li><strong>Start the Server</strong>:</li>
-                <pre><code>node app.js</code></pre>
-                <p>The server will start on <code>http://localhost:3000</code>.</p>
-            </ol>
-
-            <h3>Testing the API</h3>
-            <p>You can test the API using Postman or any other REST client by sending requests to the endpoints mentioned above.</p>
-        </section>
-
-        <section>
-            <h2>Conclusion</h2>
-            <p>The Quotes API provides a simple yet powerful way to manage a collection of quotes with support for basic CRUD operations.</p>
         </section>
     </main>
 </body>
