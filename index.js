@@ -2,6 +2,7 @@ const express = require("express");
 const morgan = require("morgan");
 const fs = require("fs");
 const path = require("path");
+const cors = require('cors');
 const authorRoutes = require("./routes/authorRoutes");
 const quoteRoutes = require("./routes/quoteRoutes");
 const { getQuotes } = require('./models/quoteModel');
@@ -9,8 +10,15 @@ const { getQuotes } = require('./models/quoteModel');
 const app = express();
 const port = process.env.PORT || 4500;
 
-// // Set the view engine to EJS
-// app.set('view engine', 'ejs');
+// Configure CORS options
+const corsOptions = {
+  origin: ['http://localhost:3000', 'http://localhost:5173'], // Add both origins or use '*'
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
+// Use CORS middleware
+app.use(cors(corsOptions));
 
 // // Static files
 app.use(express.static(path.join(__dirname, 'public'))); // For serving static files like styles.css

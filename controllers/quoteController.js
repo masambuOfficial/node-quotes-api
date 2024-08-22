@@ -69,7 +69,12 @@ exports.getQuoteById = async (req, res) => {
 exports.createQuote = async (req, res) => {
     try {
       const { text, year, category, name, picture } = req.body;
-  
+
+       // Validate input
+    if (!text || !year || !name) {
+      return res.status(400).json({ message: 'Missing required fields' });
+    }
+
       // Create a new quote along with author details using Prisma
       const newQuote = await prisma.quote.create({
         data: {
@@ -78,13 +83,8 @@ exports.createQuote = async (req, res) => {
           category,
           Author: {  // Use the correct capitalization based on your schema
             connectOrCreate: {
-              where: {
-                name: name, // Make sure this matches the field in the database
-              },
-              create: {
-                name: name,
-                picture: picture,
-              },
+              where: { name: name }, // Make sure this matches the field in the database
+              create: { name: name, picture: picture },
             },
           },
         },
@@ -108,42 +108,46 @@ exports.createQuote = async (req, res) => {
 
 // PUT (update) an existing quote by ID
 exports.updateQuote = async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { text, year, category, name, picture } = req.body;
-  
-      // Find and update the quote by ID
-      const updatedQuote = await prisma.quote.update({
-        where: { id: parseInt(id) },
-        data: {
-          text,
-          year,
-          category,
-          Author: {
-            connectOrCreate: {
-              where: { name: name },
-              create: {
-                name: name,
-                picture: picture,
-              },
-            },
-          },
+  try {
+    const { id } = req.params;
+    const { text, year, category, name, picture } = req.body;
+
+    // Check if updating the author is needed
+    let authorUpdateData = {};
+    if (name && picture) {
+      authorUpdateData = {
+        connectOrCreate: {
+          where: { name: name },
+          create: { name: name, picture: picture },
         },
-        include: {
-          Author: true, // Include author details in the response
-        },
-      });
-  
-      // Return the updated quote with a 200 status
-      res.status(200).json(updatedQuote);
-    } catch (error) {
-      // Handle any errors during the update process
-      res.status(500).json({
-        message: "Failed to update the quote",
-        error: error.message,
-      });
+      };
     }
-  };
+
+    // Find and update the quote by ID
+    const updatedQuote = await prisma.quote.update({
+      where: { id: parseInt(id) },
+      data: {
+        text,
+        year,
+        category,
+        Author: name && picture ? authorUpdateData : undefined, // Only update author if name and picture are provided
+      },
+      include: {
+        Author: true, // Include author details in the response
+      },
+    });
+
+    // Return the updated quote with a 200 status
+    res.status(200).json(updatedQuote);
+  } catch (error) {
+    console.error("Failed to update the quote:", error);
+    res.status(500).json({
+      message: "Failed to update the quote",
+      error: error.message,
+    });
+  }
+};
+
   
 
 // DELETE a quote by ID
