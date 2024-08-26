@@ -30,7 +30,7 @@ exports.getQuoteById = async (req, res) => {
       });
   
       if (!quote) {
-        return res.status(404).json({ message: "Author not found" });
+        return res.status(404).json({ message: "Quot not found" });
       }
   
       res.status(200).json(quote);
@@ -42,67 +42,47 @@ exports.getQuoteById = async (req, res) => {
   };
 
 // POST a new quote
-// exports.createQuote = async (req, res) => {
-//     try {
-//       // Create a new author in the database using Prisma
-//       const newQuote = await prisma.quote.create({
-//         data: {
-//           text: req.body.text,
-//           year: req.body.year,
-//           category: req.body.category,
-//         },
-//       });
-  
-//       // Return the newly created author with a 201 status
-//       res.status(201).json(newQuote);
-//     } catch (error) {
-//       // Handle any errors during the creation process
-//       res
-//         .status(500)
-//         .json({
-//           message: "Failed to create the new quote",
-//           error: error.message,
-//         });
-//     }
-//   };
-
 exports.createQuote = async (req, res) => {
-    try {
-      const { text, year, category, name, picture } = req.body;
+  try {
+    const { text, year, category, name, picture, authorId } = req.body;
 
-       // Validate input
-    if (!text || !year || !name) {
-      return res.status(400).json({ message: 'Missing required fields' });
+    // Validate input
+    if (!text || !year || (!name && !authorId)) {
+      return res.status(400).json({ message: "Missing required fields" });
     }
 
-      // Create a new quote along with author details using Prisma
-      const newQuote = await prisma.quote.create({
-        data: {
-          text,
-          year,
-          category,
-          Author: {  // Use the correct capitalization based on your schema
-            connectOrCreate: {
-              where: { name: name }, // Make sure this matches the field in the database
-              create: { name: name, picture: picture },
-            },
-          },
-        },
-        include: {
-          Author: true, // Include the Author relation in the response
-        },
-      });
-  
-      // Return the newly created quote with a 201 status
-      res.status(201).json(newQuote);
-    } catch (error) {
-      // Handle any errors during the creation process
-      res.status(500).json({
-        message: "Failed to create the new quote",
-        error: error.message,
-      });
-    }
-  };
+    // Ensure authorId is an integer
+    const parsedAuthorId = authorId ? parseInt(authorId, 10) : undefined;
+
+    // Define the data object based on whether we're connecting to an existing author or creating a new one
+    const data = {
+      text,
+      year: parseInt(year, 10), // Ensure year is an integer
+      category,
+      Author: parsedAuthorId
+        ? { connect: { id: parsedAuthorId } } // Connect to an existing author using an integer ID
+        : { connectOrCreate: { where: { name }, create: { name, picture } } }, // Create a new author if not found
+    };
+
+    // Create a new quote using Prisma
+    const newQuote = await prisma.quote.create({
+      data,
+      include: { Author: true }, // Include the Author relation in the response
+    });
+
+    // Return the newly created quote with a 201 status
+    res.status(201).json(newQuote);
+  } catch (error) {
+    // Enhanced error logging
+    console.error("Error during quote creation:", error);
+    res.status(500).json({
+      message: "Failed to create the new quote",
+      error: error.message,
+    });
+  }
+};
+
+
   
   
 
@@ -110,27 +90,36 @@ exports.createQuote = async (req, res) => {
 exports.updateQuote = async (req, res) => {
   try {
     const { id } = req.params;
-    const { text, year, category, name, picture } = req.body;
+    const { text, year, category, name, picture, authorId } = req.body;
 
-    // Check if updating the author is needed
+    // Ensure id is parsed as an integer
+    const quoteId = parseInt(id, 10);
+
+    // Determine author update logic
     let authorUpdateData = {};
-    if (name && picture) {
+    if (authorId) {
+      // If authorId is provided, connect to an existing author
+      authorUpdateData = {
+        connect: { id: parseInt(authorId, 10) },
+      };
+    } else if (name && picture) {
+      // If name and picture are provided, create a new author or connect to an existing one
       authorUpdateData = {
         connectOrCreate: {
-          where: { name: name },
-          create: { name: name, picture: picture },
+          where: { name },
+          create: { name, picture },
         },
       };
     }
 
     // Find and update the quote by ID
     const updatedQuote = await prisma.quote.update({
-      where: { id: parseInt(id) },
+      where: { id: quoteId },
       data: {
         text,
-        year,
+        year: parseInt(year, 10), // Ensure year is an integer
         category,
-        Author: name && picture ? authorUpdateData : undefined, // Only update author if name and picture are provided
+        Author: Object.keys(authorUpdateData).length > 0 ? authorUpdateData : undefined, // Update author only if there's data
       },
       include: {
         Author: true, // Include author details in the response

@@ -90,7 +90,6 @@ exports.updateAuthor = async (req, res) => {
   };
   
 
-// DELETE an author by ID
 exports.deleteAuthor = async (req, res) => {
     try {
       const { id } = req.params;

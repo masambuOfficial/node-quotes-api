@@ -13,7 +13,7 @@ CREATE TABLE "Quote" (
 CREATE TABLE "Author" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
-    "picture" TEXT NOT NULL,
+    "picture" TEXT,
 
     CONSTRAINT "Author_pkey" PRIMARY KEY ("id")
 );
