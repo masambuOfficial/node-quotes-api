@@ -1,5 +1,5 @@
 const { PrismaClient } = require("@prisma/client");
-const { name } = require("ejs");
+// const { name } = require("ejs");
 const { StatusCodes } = require("http-status-codes"); // Ensure you have this import
 
 const prisma = new PrismaClient();
