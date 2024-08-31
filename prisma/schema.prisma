@@ -28,3 +28,16 @@ model Author {
   picture String?
   quotes  Quote[]
 }
+model User{
+  id Int @id @default(autoincrement())
+  username String @unique
+  password String
+  email String @unique
+  role Role @default(subscriber)
+
+}
+enum Role{
+  superAdmin
+  subscriber
+  editor
+}
