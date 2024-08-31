@@ -33,11 +33,10 @@ model User{
   username String @unique
   password String
   email String @unique
-  role Role @default(subscriber)
+  role Role @default(editor)
 
 }
 enum Role{
   superAdmin
-  subscriber
   editor
 }

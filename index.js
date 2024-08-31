@@ -23,11 +23,6 @@ app.use(cors(corsOptions));
 // // Static files
 app.use(express.static(path.join(__dirname, 'public'))); // For serving static files like styles.css
 
-// // Route to display quotes
-// app.get('/', (req, res) => {
-//     const quotes = getQuotes();
-//     res.render('index', { quotes });
-// });
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));

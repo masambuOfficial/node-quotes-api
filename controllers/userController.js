@@ -35,27 +35,39 @@ const signUp = async (req, res) => {
 };
 
 const loginUsers = async (req, res) => {
-  try {
-    const { username, password } = req.body;
-    const user = await prisma.user.findUnique({ where: { username } });
-
-    if (user && (await bcrypt.compare(password, user.password))) {
-      const token = jwt.sign(
-        { id: user.id, role: user.role },
-        process.env.SECRET_KEY,
-        { expiresIn: "1h" }
-      );
-      res.status(StatusCodes.OK).json({ token, message: "Successful login" });
-    } else {
+    try {
+      const { username, password } = req.body;
+      const user = await prisma.user.findUnique({ where: { username } });
+  
+      if (user && (await bcrypt.compare(password, user.password))) {
+        const token = jwt.sign(
+          { id: user.id, role: user.role },
+          process.env.SECRET_KEY,
+          { expiresIn: "1h" }
+        );
+  
+        // Return both token and user data
+        res.status(StatusCodes.OK).json({
+          token,
+          user: {
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            role: user.role,
+          },
+          message: "Successful login",
+        });
+      } else {
+        res
+          .status(StatusCodes.UNAUTHORIZED)
+          .json({ error: "Invalid username or password" });
+      }
+    } catch (error) {
       res
-        .status(StatusCodes.UNAUTHORIZED)
-        .json({ error: "Invalid username or password" });
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: error.message });
     }
-  } catch (error) {
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ error: error.message });
-  }
-};
+  };
+  
 
 module.exports = { getUsers, signUp, loginUsers };

@@ -7,7 +7,7 @@ const validateToken = (req, res, next) => {
 
   if (!authHeader) {
     return res
-      .status(StatusCodes.NOT_FOUND)
+      .status(StatusCodes.BAD_REQUEST)
       .json({ error: "Auth header is missing" });
   }
     const token = authHeader.split(" ")[1];
