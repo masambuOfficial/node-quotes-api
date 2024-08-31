@@ -5,7 +5,7 @@ const path = require("path");
 const cors = require('cors');
 const authorRoutes = require("./routes/authorRoutes");
 const quoteRoutes = require("./routes/quoteRoutes");
-const { getQuotes } = require('./models/quoteModel');
+const usersRouter =require("./routes/usersRouter")
 
 const app = express();
 const port = process.env.PORT || 4500;
@@ -53,6 +53,7 @@ app.use(
 // Routes
 app.use("/authors", authorRoutes);
 app.use("/quotes", quoteRoutes);
+app.use("/users",usersRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
