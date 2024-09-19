@@ -34,7 +34,6 @@ model User{
   password String
   email String @unique
   role Role @default(editor)
-
 }
 enum Role{
   superAdmin

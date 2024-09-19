@@ -1,0 +1,4 @@
+Unit tests:
+- Run using jest
+Integration tests:
+- Run with both jest and supper test
