@@ -5,14 +5,14 @@ const path = require("path");
 const cors = require('cors');
 const authorRoutes = require("./routes/authorRoutes");
 const quoteRoutes = require("./routes/quoteRoutes");
-const usersRouter =require("./routes/usersRouter")
+const usersRouter = require("./routes/usersRouter");
 
 const app = express();
 const port = process.env.PORT || 4500;
 
 // Configure CORS options
 const corsOptions = {
-  origin: ['http://localhost:5174', 'http://localhost:5173'], // Add both origins or use '*'
+  origin: ['http://localhost:5174', 'http://localhost:5173'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
@@ -20,9 +20,8 @@ const corsOptions = {
 // Use CORS middleware
 app.use(cors(corsOptions));
 
-// // Static files
-app.use(express.static(path.join(__dirname, 'public'))); // For serving static files like styles.css
-
+// Static files
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -44,17 +43,21 @@ app.use(
   })
 );
 
-
 // Routes
 app.use("/authors", authorRoutes);
 app.use("/quotes", quoteRoutes);
-app.use("/users",usersRouter);
+app.use("/users", usersRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
   res.status(err.status || 500).json({ error: err.message });
 });
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+// Start the server only if the script is run directly
+if (require.main === module) {
+  app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+  });
+}
+
+module.exports = app; // Export the app for testing

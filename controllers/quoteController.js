@@ -30,7 +30,7 @@ exports.getQuoteById = async (req, res) => {
       });
   
       if (!quote) {
-        return res.status(404).json({ message: "Quot not found" });
+        return res.status(404).json({ message: "Quote not found" });
       }
   
       res.status(200).json(quote);
