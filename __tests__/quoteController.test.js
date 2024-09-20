@@ -38,7 +38,7 @@ describe('Quotes API', () => {
     };
 
     const res = await request(app)
-      .put('/quotes/3')
+      .put('/quotes/10')
       .send(updateData);
 
     expect(res.statusCode).toEqual(200);
@@ -46,7 +46,7 @@ describe('Quotes API', () => {
   });
 
   it('should delete a quote', async () => {
-    const res = await request(app).delete('/quotes/3');
+    const res = await request(app).delete('/quotes/8');
     expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveProperty('message', 'Quote deleted successfully');
   });
