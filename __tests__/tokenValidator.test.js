@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const validateToken = require('../utils/tokenValidator');
+const validateToken = require('../utils/tokenValidator.js');
 const { StatusCodes } = require('http-status-codes');
 
 jest.mock('jsonwebtoken');
